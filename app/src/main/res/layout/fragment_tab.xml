@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".TabA">
+
+    <!-- TODO: Update blank fragment layout -->
+    <!--
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/hello_blank_fragment" />
+        -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/blanco"
+        android:fillViewport="true"
+        android:padding="2dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:orientation="vertical"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6"
+                    android:background="@color/blanco"
+                    android:orientation="vertical">
+                    <!--
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/logo"/>-->
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginTop="8dp">
+
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:hint="Nombre(s)"
+                            android:maxLines="1" />
+                    </android.support.design.widget.TextInputLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="30dp"
+                        android:layout_marginLeft="30dp">
+                        <AutoCompleteTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="Apellido Paterno"
+                            android:layout_weight="1"/>
+                        <AutoCompleteTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="Apellido Materno"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Motivo de la visita"/>
+                    </android.support.design.widget.TextInputLayout>
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp">
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Placa"/>
+                    </android.support.design.widget.TextInputLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Tipo de visitante"/>
+                        <Spinner
+                            android:id="@+id/rgvRoles"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="3"/>
+                    </LinearLayout>
+                    <android.support.constraint.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp">
+                        <ImageView
+                            android:id="@+id/imgPlaca"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:src="@drawable/cameraplaca"
+                            app:layout_constraintHeight_default="percent"
+                            app:layout_constraintHeight_percent="1"
+                            app:layout_constraintWidth_default="percent"
+                            app:layout_constraintWidth_percent="0.333"
+                            app:layout_constraintLeft_toLeftOf="parent"/>
+                        <ImageView
+                            android:id="@+id/imgVehiculo"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:src="@drawable/cameravehiculo"
+                            app:layout_constraintHeight_default="percent"
+                            app:layout_constraintHeight_percent="1"
+                            app:layout_constraintWidth_default="percent"
+                            app:layout_constraintWidth_percent="0.333"
+                            app:layout_constraintLeft_toRightOf="@id/imgPlaca"/>
+                        <ImageView
+                            android:id="@+id/imgIdent"
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:src="@drawable/cameradent"
+                            app:layout_constraintHeight_default="percent"
+                            app:layout_constraintHeight_percent="1"
+                            app:layout_constraintWidth_default="percent"
+                            app:layout_constraintWidth_percent="0.333"
+                            app:layout_constraintLeft_toRightOf="@id/imgVehiculo"/>
+                    </android.support.constraint.ConstraintLayout>
+                    <android.support.design.widget.TextInputLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_gravity="center">
+                        <Button
+                            android:id="@+id/btnNV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="@string/agregar"
+                            android:background="@color/colorPrimaryDark"
+                            android:textStyle="bold"
+                            android:textColor="@color/blanco"
+                            android:layout_gravity="center" />
+                    </android.support.design.widget.TextInputLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>

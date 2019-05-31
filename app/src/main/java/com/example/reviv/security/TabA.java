@@ -2,9 +2,13 @@ package com.example.reviv.security;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.NetworkOnMainThreadException;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -20,8 +24,94 @@ import android.widget.Toast;
 
 import com.example.reviv.security.database.myDbAdapter;
 
+import net.gotev.uploadservice.MultipartUploadRequest;
+import net.gotev.uploadservice.UploadNotificationConfig;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
+import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.KeyStore;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.UUID;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
+
+import okhttp3.OkHttpClient;
+import retrofit2.Retrofit;
+
 
 public class TabA extends Fragment {
+
+    private class sendDatos extends AsyncTask<String,Void,String>
+    {
+        protected String doInBackground(String... params) {
+            String fileName = params[0];
+            String idU=params[2];
+            String nombre="";
+
+            switch (params[1])
+            {
+                case "vehiculo":
+                    nombre="vehi";
+                    break;
+                case "placa":
+                    nombre="plac";
+                    break;
+                case "ident":
+                    nombre="ident";
+                    break;
+
+            }
+            try{
+                String uploadId= UUID.randomUUID().toString();
+
+                new MultipartUploadRequest(getContext(),uploadId,"http://192.168.0.15/Security/upload.php")
+                        .addFileToUpload(fileName,"image")
+                        .addParameter("name",nombre)
+                        .addParameter("idUsuario",idU)
+                        .setNotificationConfig(new UploadNotificationConfig()
+                                .setCompletedMessage("Imagen subida exitosamente")
+                                .setTitle("Subida de imagen")
+                        )
+                        .setMaxRetries(2)
+                        .startUpload();
+
+            }catch (Exception ex){
+                Log.d("Error al subir",ex.getMessage());
+            }
+
+            return null;
+        }
+    }
+
+
 
     Spinner spnTipo;
     myDbAdapter helper;
@@ -30,6 +120,13 @@ public class TabA extends Fragment {
     AutoCompleteTextView txtaMaterno;
     AutoCompleteTextView txtMotivo;
     AutoCompleteTextView txtPlaca;
+
+    Uri uriPlaca;
+    Uri uriVehiculo;
+    Uri uriIdent;
+    String vehiculoPath;
+    String placaPath;
+    String identPath;
 
     ImageView vehiculo;
     ImageView placa;
@@ -61,6 +158,7 @@ public class TabA extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         idUsuario=getArguments().getString("idUsuario");
         Log.d("pruebaaausuario",idUsuario);
         return inflater.inflate(R.layout.fragment_tab, container, false);
@@ -77,6 +175,11 @@ public class TabA extends Fragment {
         placa=(ImageView)getView().findViewById(R.id.imgPlaca);
         vehiculo=(ImageView)getView().findViewById(R.id.imgVehiculo);
         identif=(ImageView)getView().findViewById(R.id.imgIdent);
+
+        vehiculo.setEnabled(false);
+        identif.setEnabled(false);
+
+
         btnNuevaVisita=(Button)getView().findViewById(R.id.btnNV);
         txtNombre=(AutoCompleteTextView)getView().findViewById(R.id.txtNombreV);
         txtaPaterno=(AutoCompleteTextView)getView().findViewById(R.id.txtAPaternoV);
@@ -106,10 +209,16 @@ public class TabA extends Fragment {
                 placaI=txtPlaca.getText().toString();
                 tipo=spnTipo.getSelectedItem().toString();
 
+                new sendDatos().execute(vehiculoPath,"vehiculo",idUsuario);
+                new sendDatos().execute(placaPath,"placa",idUsuario);
+                new sendDatos().execute(identPath,"ident",idUsuario);
+                //sendToServer(vehiculoPath);
+
+
 
                 Toast.makeText(getContext(),"holi",Toast.LENGTH_LONG).show();
-                helper.insertVisitor(idUsuario,nombre,aPaterno,aMaterno,motivo,placaI,tipo,
-                        );
+                /*helper.insertVisitor(idUsuario,nombre,aPaterno,aMaterno,motivo,placaI,tipo,
+                        ); */
             }
         });
 
@@ -140,25 +249,49 @@ public class TabA extends Fragment {
 
     }
 
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.MediaColumns.DATA};
+        Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
+        int column_index = cursor
+                .getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+        cursor.moveToFirst();
+        String imagePath = cursor.getString(column_index);
+
+        return cursor.getString(column_index);
+    }
+
+
+
     public void onActivityResult(int requestCode,int resultCode,Intent data)
     {
         if(requestCode==CAMERA_PIC_REQUEST)
         {
             Bitmap image=(Bitmap)data.getExtras().get("data");
+            uriVehiculo=data.getData();
+            vehiculoPath=getPath(uriVehiculo);
+
             ImageView imageView=(ImageView)getView().findViewById(R.id.imgVehiculo);
             imageView.setImageBitmap(image);
+            identif.setEnabled(true);
         }
         else if(requestCode==CAMERA_PIC_REQUEST_I)
         {
             Bitmap image=(Bitmap)data.getExtras().get("data");
+            uriIdent=data.getData();
+            identPath=getPath(uriIdent);
+
             ImageView imageView=(ImageView)getView().findViewById(R.id.imgIdent);
             imageView.setImageBitmap(image);
         }
         else if(requestCode==CAMERA_PIC_REQUEST_P)
         {
             Bitmap image=(Bitmap)data.getExtras().get("data");
+            uriPlaca=data.getData();
+            placaPath=getPath(uriPlaca);
+
             ImageView imageView=(ImageView)getView().findViewById(R.id.imgPlaca);
             imageView.setImageBitmap(image);
+            vehiculo.setEnabled(true);
         }
     }
 

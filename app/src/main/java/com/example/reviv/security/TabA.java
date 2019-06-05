@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -27,47 +28,76 @@ import com.example.reviv.security.database.myDbAdapter;
 import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
-import java.io.BufferedInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import org.apache.http.HttpConnection;
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
-import java.security.KeyStore;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
+import java.net.URL;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.TrustManagerFactory;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.HttpsURLConnection;
 
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
+//import retrofit2.http.Url;
 
 
 public class TabA extends Fragment {
+
+    private class createFolder extends AsyncTask<String,Void,String>
+    {
+        private String fileName="";
+
+        protected String doInBackground(String... params){
+            String response="nada";
+
+
+            try{
+                URL url = new URL("http://192.168.1.66/Security/createFolder.php");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                String data="lastId="+params[0]+"&idU="+idUsuario;
+
+                String line;
+                StringBuilder sb= new StringBuilder();
+                conn.getOutputStream().write(data.getBytes("UTF-8"));
+
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+                while ((line=br.readLine()) != null) {
+                    sb.append(line);
+                    response =sb.toString();
+                }
+                br.close();
+            }catch (IOException ie){
+                ie.printStackTrace();
+            }
+
+            Log.d("Respuesta del server",response);
+
+
+            this.fileName=response.toString();
+            return response.toString();
+        }
+
+        public String getFile(){return this.fileName;}
+    }
+
+
 
     private class sendDatos extends AsyncTask<String,Void,String>
     {
@@ -92,13 +122,15 @@ public class TabA extends Fragment {
             try{
                 String uploadId= UUID.randomUUID().toString();
 
-                new MultipartUploadRequest(getContext(),uploadId,"http://192.168.0.15/Security/upload.php")
+                new MultipartUploadRequest(getContext(),uploadId,"http://192.168.1.66/Security/upload.php")
                         .addFileToUpload(fileName,"image")
                         .addParameter("name",nombre)
                         .addParameter("idUsuario",idU)
+                        .addParameter("folder",params[3])
                         .setNotificationConfig(new UploadNotificationConfig()
                                 .setCompletedMessage("Imagen subida exitosamente")
                                 .setTitle("Subida de imagen")
+                                .setErrorMessage("Error al subir imagen")
                         )
                         .setMaxRetries(2)
                         .startUpload();
@@ -177,7 +209,9 @@ public class TabA extends Fragment {
         identif=(ImageView)getView().findViewById(R.id.imgIdent);
 
         vehiculo.setEnabled(false);
+        vehiculo.setAlpha(0.5f);
         identif.setEnabled(false);
+        identif.setAlpha(0.5f);
 
 
         btnNuevaVisita=(Button)getView().findViewById(R.id.btnNV);
@@ -200,7 +234,9 @@ public class TabA extends Fragment {
             @Override
             public void onClick(View v)
             {
-                String nombre,aPaterno,aMaterno,motivo,placaI,tipo;
+                createFolder crea=new createFolder();
+                String nombre,aPaterno,aMaterno,motivo,placaI,tipo,folderName;
+                long lastid=0;
 
                 nombre=txtNombre.getText().toString();
                 aPaterno=txtaPaterno.getText().toString();
@@ -209,16 +245,24 @@ public class TabA extends Fragment {
                 placaI=txtPlaca.getText().toString();
                 tipo=spnTipo.getSelectedItem().toString();
 
-                new sendDatos().execute(vehiculoPath,"vehiculo",idUsuario);
-                new sendDatos().execute(placaPath,"placa",idUsuario);
-                new sendDatos().execute(identPath,"ident",idUsuario);
-                //sendToServer(vehiculoPath);
+                lastid=helper.insertVisitor(idUsuario,nombre,aPaterno,aMaterno,motivo,placaI,tipo);
+
+                crea.execute(String.valueOf(lastid));
+                folderName=crea.getFile();
+
+
+
+
+                Toast.makeText(getContext(),folderName,Toast.LENGTH_LONG).show();
+
+                new sendDatos().execute(vehiculoPath,"vehiculo",idUsuario,folderName);
+                new sendDatos().execute(placaPath,"placa",idUsuario,folderName);
+                new sendDatos().execute(identPath,"ident",idUsuario,folderName);
 
 
 
                 Toast.makeText(getContext(),"holi",Toast.LENGTH_LONG).show();
-                /*helper.insertVisitor(idUsuario,nombre,aPaterno,aMaterno,motivo,placaI,tipo,
-                        ); */
+
             }
         });
 
@@ -262,10 +306,13 @@ public class TabA extends Fragment {
 
 
 
+
     public void onActivityResult(int requestCode,int resultCode,Intent data)
     {
         if(requestCode==CAMERA_PIC_REQUEST)
         {
+            identif.setAlpha(1.0f);
+
             Bitmap image=(Bitmap)data.getExtras().get("data");
             uriVehiculo=data.getData();
             vehiculoPath=getPath(uriVehiculo);
@@ -273,6 +320,7 @@ public class TabA extends Fragment {
             ImageView imageView=(ImageView)getView().findViewById(R.id.imgVehiculo);
             imageView.setImageBitmap(image);
             identif.setEnabled(true);
+
         }
         else if(requestCode==CAMERA_PIC_REQUEST_I)
         {
@@ -285,6 +333,8 @@ public class TabA extends Fragment {
         }
         else if(requestCode==CAMERA_PIC_REQUEST_P)
         {
+            vehiculo.setAlpha(1.0f);
+
             Bitmap image=(Bitmap)data.getExtras().get("data");
             uriPlaca=data.getData();
             placaPath=getPath(uriPlaca);
@@ -292,6 +342,7 @@ public class TabA extends Fragment {
             ImageView imageView=(ImageView)getView().findViewById(R.id.imgPlaca);
             imageView.setImageBitmap(image);
             vehiculo.setEnabled(true);
+
         }
     }
 

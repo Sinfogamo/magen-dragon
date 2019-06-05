@@ -74,8 +74,8 @@ public class myDbAdapter {
 
     }
 
-    public void insertVisitor(String idUsuario,String nombre,String aPaterno,String aMaterno,String motivo,
-                              String placa,int tipoV,String imgPlaca,String imgVehiculo,String imgIdent)
+    public long insertVisitor(String idUsuario,String nombre,String aPaterno,String aMaterno,String motivo,
+                              String placa,String tipoV)
     {
         SQLiteDatabase db=this.myhelper.getWritableDatabase();
 
@@ -88,15 +88,13 @@ public class myDbAdapter {
         values.put("placa",placa);
         values.put("tipoVisita",tipoV);
         values.put("idUsuario",idUsuario);
-        values.put("imgPlaca",imgPlaca);
-        values.put("imgVehic",imgVehiculo);
-        values.put("imgIdent",imgIdent);
 
         try{
-            db.insert("datosIngresos",null,values);
+            return db.insert("datosIngresos",null,values);
         }catch (SQLException e){
             e.printStackTrace();
         }
+        return 0;
 
     }
 

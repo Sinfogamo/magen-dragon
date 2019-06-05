@@ -139,7 +139,7 @@ public class Admin extends AppCompatActivity implements NavigationView.OnNavigat
             }
 
 
-            drawables[i]=TextDrawable.builder().buildRound(auxiliar[1].substring(0,2).toUpperCase(),generator.getRandomColor());
+            drawables[i]=TextDrawable.builder().buildRect(auxiliar[1].substring(0,2).toUpperCase(),generator.getRandomColor());
             category.add(new Category(String.valueOf(auxiliar[0]),auxiliar[1]+" "+auxiliar[2]+" "+auxiliar[3],role,drawables[i]));
         }
         final AdapterCategory adaptador=new AdapterCategory(this,category);

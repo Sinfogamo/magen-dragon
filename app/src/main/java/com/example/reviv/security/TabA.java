@@ -4,11 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.NetworkOnMainThreadException;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,7 +17,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -29,27 +29,12 @@ import net.gotev.uploadservice.MultipartUploadRequest;
 import net.gotev.uploadservice.UploadNotificationConfig;
 
 
-import org.apache.http.HttpConnection;
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 import java.net.URL;
-
-import javax.net.ssl.HttpsURLConnection;
 
 //import retrofit2.http.Url;
 
@@ -153,6 +138,9 @@ public class TabA extends Fragment {
     AutoCompleteTextView txtMotivo;
     AutoCompleteTextView txtPlaca;
 
+
+    LinearLayout fields;
+
     Uri uriPlaca;
     Uri uriVehiculo;
     Uri uriIdent;
@@ -201,6 +189,7 @@ public class TabA extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
     {
 
+        fields=(LinearLayout)getView().findViewById(R.id.LLfields);
 
         helper=new myDbAdapter(getContext());
 
@@ -234,6 +223,11 @@ public class TabA extends Fragment {
             @Override
             public void onClick(View v)
             {
+                LinearLayout layout=getView().findViewById(R.id.LLfields);
+                Context context=getContext();
+
+
+
                 createFolder crea=new createFolder();
                 String nombre,aPaterno,aMaterno,motivo,placaI,tipo,folderName;
                 long lastid=0;
@@ -245,23 +239,29 @@ public class TabA extends Fragment {
                 placaI=txtPlaca.getText().toString();
                 tipo=spnTipo.getSelectedItem().toString();
 
-                lastid=helper.insertVisitor(idUsuario,nombre,aPaterno,aMaterno,motivo,placaI,tipo);
-
-                crea.execute(String.valueOf(lastid));
-                folderName=crea.getFile();
 
 
 
 
-                Toast.makeText(getContext(),folderName,Toast.LENGTH_LONG).show();
-
-                new sendDatos().execute(vehiculoPath,"vehiculo",idUsuario,folderName);
-                new sendDatos().execute(placaPath,"placa",idUsuario,folderName);
-                new sendDatos().execute(identPath,"ident",idUsuario,folderName);
 
 
+                //lastid=helper.insertVisitor(idUsuario,nombre,aPaterno,aMaterno,motivo,placaI,tipo);
 
-                Toast.makeText(getContext(),"holi",Toast.LENGTH_LONG).show();
+                //crea.execute(String.valueOf(lastid));
+                //folderName=crea.getFile();
+
+
+
+
+                //Toast.makeText(getContext(),folderName,Toast.LENGTH_LONG).show();
+
+                //new sendDatos().execute(vehiculoPath,"vehiculo",idUsuario,folderName);
+                //new sendDatos().execute(placaPath,"placa",idUsuario,folderName);
+                //new sendDatos().execute(identPath,"ident",idUsuario,folderName);
+
+
+
+                //Toast.makeText(getContext(),"holi",Toast.LENGTH_LONG).show();
 
             }
         });
@@ -291,6 +291,11 @@ public class TabA extends Fragment {
         });
 
 
+    }
+
+    public void createNewInputs()
+    {
+        Toast.makeText(getContext(),"chi",Toast.LENGTH_LONG).show();
     }
 
     public String getPath(Uri uri) {

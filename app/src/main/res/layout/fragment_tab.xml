@@ -29,13 +29,13 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="700dp"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
 
-
                 <LinearLayout
+                    android:id="@+id/LLfields"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="6"
@@ -50,8 +50,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
-                        android:layout_marginRight="30dp"
-                        android:layout_marginTop="8dp">
+                        android:layout_marginTop="8dp"
+                        android:layout_marginRight="30dp">
 
                         <AutoCompleteTextView
                             android:id="@+id/txtNombreV"
@@ -60,65 +60,77 @@
                             android:hint="Nombre(s)"
                             android:maxLines="1" />
                     </android.support.design.widget.TextInputLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="30dp"
-                        android:layout_marginLeft="30dp">
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="30dp">
+
                         <AutoCompleteTextView
                             android:id="@+id/txtAPaternoV"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="Apellido Paterno"
-                            android:layout_weight="1"/>
+                            android:layout_weight="1"
+                            android:hint="Apellido Paterno" />
+
                         <AutoCompleteTextView
                             android:id="@+id/txtAMaternoV"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:hint="Apellido Materno"
-                            android:layout_weight="1"/>
+                            android:layout_weight="1"
+                            android:hint="Apellido Materno" />
                     </LinearLayout>
+
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp">
+
                         <AutoCompleteTextView
                             android:id="@+id/txtMotivoV"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Motivo de la visita"/>
+                            android:hint="Motivo de la visita" />
                     </android.support.design.widget.TextInputLayout>
+
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp">
+
                         <AutoCompleteTextView
                             android:id="@+id/txtPlacaV"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="Placa"/>
+                            android:hint="Placa" />
                     </android.support.design.widget.TextInputLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="30dp"
                         android:layout_marginRight="30dp">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Tipo de visitante"/>
+                            android:text="Tipo de visitante" />
+
                         <Spinner
                             android:id="@+id/rgvRoles"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="3"/>
+                            android:layout_weight="3" />
                     </LinearLayout>
+
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="100dp">
+
                         <ImageView
                             android:id="@+id/imgPlaca"
                             android:layout_width="0dp"
@@ -126,9 +138,10 @@
                             android:src="@drawable/cameraplaca"
                             app:layout_constraintHeight_default="percent"
                             app:layout_constraintHeight_percent="1"
+                            app:layout_constraintLeft_toLeftOf="parent"
                             app:layout_constraintWidth_default="percent"
-                            app:layout_constraintWidth_percent="0.333"
-                            app:layout_constraintLeft_toLeftOf="parent"/>
+                            app:layout_constraintWidth_percent="0.333" />
+
                         <ImageView
                             android:id="@+id/imgVehiculo"
                             android:layout_width="0dp"
@@ -136,9 +149,10 @@
                             android:src="@drawable/cameravehiculo"
                             app:layout_constraintHeight_default="percent"
                             app:layout_constraintHeight_percent="1"
+                            app:layout_constraintLeft_toRightOf="@id/imgPlaca"
                             app:layout_constraintWidth_default="percent"
-                            app:layout_constraintWidth_percent="0.333"
-                            app:layout_constraintLeft_toRightOf="@id/imgPlaca"/>
+                            app:layout_constraintWidth_percent="0.333" />
+
                         <ImageView
                             android:id="@+id/imgIdent"
                             android:layout_width="0dp"
@@ -146,27 +160,29 @@
                             android:src="@drawable/cameradent"
                             app:layout_constraintHeight_default="percent"
                             app:layout_constraintHeight_percent="1"
+                            app:layout_constraintLeft_toRightOf="@id/imgVehiculo"
                             app:layout_constraintWidth_default="percent"
-                            app:layout_constraintWidth_percent="0.333"
-                            app:layout_constraintLeft_toRightOf="@id/imgVehiculo"/>
+                            app:layout_constraintWidth_percent="0.333" />
                     </android.support.constraint.ConstraintLayout>
+
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_gravity="center"
                         android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:layout_gravity="center">
+                        android:layout_marginTop="5dp"
+                        android:layout_marginRight="20dp">
+
                         <Button
                             android:id="@+id/btnNV"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="@string/agregar"
+                            android:layout_gravity="center"
                             android:background="@color/colorPrimaryDark"
-                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:text="@string/Continuar"
                             android:textColor="@color/blanco"
-                            android:layout_gravity="center" />
+                            android:textStyle="bold" />
                     </android.support.design.widget.TextInputLayout>
                 </LinearLayout>
             </LinearLayout>

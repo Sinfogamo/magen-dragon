@@ -125,12 +125,12 @@ public class Admin extends AppCompatActivity implements NavigationView.OnNavigat
 
             if(auxiliar[5].equals("6 "))
             {
-                role="Gerente";
+                role="Alumno";
                 Log.d("Role",role);
             }
             else if(auxiliar[5].equals("7 "))
             {
-                role="Vigilante";
+                role="Alumno";
                 Log.d("Role",role);
             }
             else
@@ -139,7 +139,7 @@ public class Admin extends AppCompatActivity implements NavigationView.OnNavigat
             }
 
 
-            drawables[i]=TextDrawable.builder().buildRect(auxiliar[1].substring(0,2).toUpperCase(),generator.getRandomColor());
+            drawables[i]=TextDrawable.builder().buildRound(auxiliar[1].substring(0,2).toUpperCase(),generator.getRandomColor());
             category.add(new Category(String.valueOf(auxiliar[0]),auxiliar[1]+" "+auxiliar[2]+" "+auxiliar[3],role,drawables[i]));
         }
         final AdapterCategory adaptador=new AdapterCategory(this,category);

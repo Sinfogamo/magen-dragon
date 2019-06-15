@@ -21,10 +21,11 @@
     <string name="Direccion">Dirección</string>
     <string name="seleccionRol">Selecciona el tipo de usuario</string>
     <string name="agregar">Agregar</string>
+    <string name="Continuar">Continuar</string>
     <string name="contra">Contraseña</string>
     <string-array name="roles">
-        <item>Gerente</item>
-        <item>Vigilante</item>
+        <item>Alumno</item>
+        <item>Alumno</item>
     </string-array>
     <string-array name="tipos">
         <item>Visitante</item>

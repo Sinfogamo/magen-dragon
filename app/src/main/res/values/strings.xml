@@ -18,14 +18,19 @@
     <string name="aMaterno">Apellido Materno</string>
     <string name="matricula">Matrícula</string>
     <string name="Telefono">Teléfono</string>
+    <string name="Celular">Celular</string>
     <string name="Direccion">Dirección</string>
     <string name="seleccionRol">Selecciona el tipo de usuario</string>
     <string name="agregar">Agregar</string>
     <string name="Continuar">Continuar</string>
     <string name="contra">Contraseña</string>
+    <string name="nombreResidente">Nombre del residente</string>
+    <string name="propietario">Propietario</string>
+    <string name="arrendatario">Arrendatario</string>
+
     <string-array name="roles">
-        <item>Alumno</item>
-        <item>Alumno</item>
+        <item>Gerente</item>
+        <item>Vigilante</item>
     </string-array>
     <string-array name="tipos">
         <item>Visitante</item>

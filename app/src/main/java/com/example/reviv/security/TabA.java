@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -72,7 +73,7 @@ public class TabA extends Fragment {
                 ie.printStackTrace();
             }
 
-            Log.d("Respuesta del server",response);
+            //Log.d("Respuesta del server",response);
 
 
             this.fileName=response.toString();
@@ -121,7 +122,7 @@ public class TabA extends Fragment {
                         .startUpload();
 
             }catch (Exception ex){
-                Log.d("Error al subir",ex.getMessage());
+                //Log.d("Error al subir",ex.getMessage());
             }
 
             return null;
@@ -140,6 +141,7 @@ public class TabA extends Fragment {
 
 
     LinearLayout fields;
+    LinearLayout parent;
 
     Uri uriPlaca;
     Uri uriVehiculo;
@@ -152,6 +154,11 @@ public class TabA extends Fragment {
     ImageView placa;
     ImageView identif;
     Button btnNuevaVisita;
+    View ido;
+    View ido2;
+    View ido3;
+    View ido4;
+    View ido5;
     String idUsuario;
     final int CAMERA_PIC_REQUEST=1337;
     final int CAMERA_PIC_REQUEST_P=1336;
@@ -180,16 +187,24 @@ public class TabA extends Fragment {
         // Inflate the layout for this fragment
 
         idUsuario=getArguments().getString("idUsuario");
-        Log.d("pruebaaausuario",idUsuario);
+        //Log.d("pruebaaausuario",idUsuario);
+
+
         return inflater.inflate(R.layout.fragment_tab, container, false);
 
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    public void onViewCreated(final View view, @Nullable Bundle savedInstanceState)
     {
 
+        int parentHeight=1;
+
+        parent=(LinearLayout)getView().findViewById(R.id.LLparent);
+
         fields=(LinearLayout)getView().findViewById(R.id.LLfields);
+
+       parentHeight=getTotalHeight(fields);
 
         helper=new myDbAdapter(getContext());
 
@@ -209,6 +224,12 @@ public class TabA extends Fragment {
         txtaMaterno=(AutoCompleteTextView)getView().findViewById(R.id.txtAMaternoV);
         txtMotivo=(AutoCompleteTextView)getView().findViewById(R.id.txtMotivoV);
         txtPlaca=(AutoCompleteTextView)getView().findViewById(R.id.txtPlacaV);
+        ido=getView().findViewById(R.id.ido);
+        ido2=getView().findViewById(R.id.ido2);
+        ido3=getView().findViewById(R.id.ido3);
+        ido4=getView().findViewById(R.id.ido4);
+        ido5=getView().findViewById(R.id.ido5);
+
 
         spnTipo=(Spinner)getView().findViewById(R.id.rgvRoles);
         ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(getContext(),R.array.tipos,android.R.layout.simple_spinner_item);
@@ -238,6 +259,10 @@ public class TabA extends Fragment {
                 motivo=txtMotivo.getText().toString();
                 placaI=txtPlaca.getText().toString();
                 tipo=spnTipo.getSelectedItem().toString();
+
+                setSecondInputs(view);
+
+
 
 
 
@@ -291,6 +316,30 @@ public class TabA extends Fragment {
         });
 
 
+    }
+
+    public void setSecondInputs(View view)
+    {
+        ido.setVisibility(view.VISIBLE);
+        ido2.setVisibility(view.VISIBLE);
+        ido3.setVisibility(view.VISIBLE);
+        ido4.setVisibility(view.VISIBLE);
+        ido5.setVisibility(view.VISIBLE);
+    }
+
+    public int getTotalHeight(LinearLayout linearLayout)
+    {
+        int count=linearLayout.getChildCount();
+        int heightPixels=0;
+        View v=null;
+
+        for(int i=0;i<count;i++)
+        {
+            v=linearLayout.getChildAt(i);
+            heightPixels+=v.getHeight();
+        }
+
+        return heightPixels;
     }
 
     public void createNewInputs()

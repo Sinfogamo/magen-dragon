@@ -125,12 +125,12 @@ public class Admin extends AppCompatActivity implements NavigationView.OnNavigat
 
             if(auxiliar[5].equals("6 "))
             {
-                role="Alumno";
+                role="Gerente";
                 Log.d("Role",role);
             }
             else if(auxiliar[5].equals("7 "))
             {
-                role="Alumno";
+                role="Vigilante";
                 Log.d("Role",role);
             }
             else

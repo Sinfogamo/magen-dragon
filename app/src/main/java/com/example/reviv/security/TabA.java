@@ -1,5 +1,8 @@
 package com.example.reviv.security;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -7,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -15,12 +19,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -34,6 +40,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.net.URL;
 
@@ -138,10 +146,12 @@ public class TabA extends Fragment {
     AutoCompleteTextView txtaMaterno;
     AutoCompleteTextView txtMotivo;
     AutoCompleteTextView txtPlaca;
+    AutoCompleteTextView txtNombreResidente;
 
 
     LinearLayout fields;
     LinearLayout parent;
+    ScrollView sc;
 
     Uri uriPlaca;
     Uri uriVehiculo;
@@ -200,6 +210,8 @@ public class TabA extends Fragment {
 
         int parentHeight=1;
 
+        sc=(ScrollView)getView().findViewById(R.id.ScrollV);
+
         parent=(LinearLayout)getView().findViewById(R.id.LLparent);
 
         fields=(LinearLayout)getView().findViewById(R.id.LLfields);
@@ -224,6 +236,7 @@ public class TabA extends Fragment {
         txtaMaterno=(AutoCompleteTextView)getView().findViewById(R.id.txtAMaternoV);
         txtMotivo=(AutoCompleteTextView)getView().findViewById(R.id.txtMotivoV);
         txtPlaca=(AutoCompleteTextView)getView().findViewById(R.id.txtPlacaV);
+        txtNombreResidente=(AutoCompleteTextView)getView().findViewById(R.id.atvNombreV);
         ido=getView().findViewById(R.id.ido);
         ido2=getView().findViewById(R.id.ido2);
         ido3=getView().findViewById(R.id.ido3);
@@ -234,6 +247,23 @@ public class TabA extends Fragment {
         spnTipo=(Spinner)getView().findViewById(R.id.rgvRoles);
         ArrayAdapter<CharSequence> adapter=ArrayAdapter.createFromResource(getContext(),R.array.tipos,android.R.layout.simple_spinner_item);
         spnTipo.setAdapter(adapter);
+
+
+        String[] lista=new String[10];
+        lista[0]="Miguel Alejandro Pérez Castañeda";
+        lista[1]="Alma Gissele Galindo Bonilla";
+        lista[2]="Brenda Terry Miranda";
+        lista[3]="Cesar López Reyes";
+        lista[4]="Luis Ángel Mena Martinez";
+        lista[5]="Lucía Valencia López";
+        lista[6]="Alexis Sánchez Cervantez";
+        lista[7]="Jesús Pacheco Jerónimo";
+        lista[8]="Albert Romero Hernández";
+        lista[9]="Christina Bonilla Vázquez";
+
+        ArrayAdapter<String> nombreResAdapter=new ArrayAdapter<String>(getContext(),android.R.layout.simple_dropdown_item_1line,lista);
+
+        txtNombreResidente.setAdapter(nombreResAdapter);
 
         placa.setClickable(true);
         vehiculo.setClickable(true);
@@ -261,6 +291,7 @@ public class TabA extends Fragment {
                 tipo=spnTipo.getSelectedItem().toString();
 
                 setSecondInputs(view);
+
 
 
 
@@ -320,11 +351,74 @@ public class TabA extends Fragment {
 
     public void setSecondInputs(View view)
     {
+
+
         ido.setVisibility(view.VISIBLE);
+        ido.setAlpha(0f);
         ido2.setVisibility(view.VISIBLE);
+        ido2.setAlpha(0f);
         ido3.setVisibility(view.VISIBLE);
+        ido3.setAlpha(0f);
         ido4.setVisibility(view.VISIBLE);
+        ido4.setAlpha(0f);
         ido5.setVisibility(view.VISIBLE);
+        ido5.setAlpha(0f);
+
+        final ArrayList<View> arreglo=new ArrayList<>();
+        final ArrayList<ObjectAnimator> oArray=new ArrayList<>();
+
+        arreglo.add(ido);
+        arreglo.add(ido2);
+        arreglo.add(ido3);
+        arreglo.add(ido4);
+        arreglo.add(ido5);
+
+
+
+        new CountDownTimer(150, 1) {
+            public void onTick(long millisUntilFinished) {
+                //sc.smoothScrollTo(0,sc.getBottom());
+                ObjectAnimator translate=ObjectAnimator.ofInt(sc,"ScrollY",sc.getBottom());
+                //ObjectAnimator fade=ObjectAnimator.ofFloat(ido,"alpha",0,1f);
+                //translate.setDuration(2000);
+
+                for(int i=0;i<arreglo.size();i++)
+                {
+                    oArray.add(ObjectAnimator.ofFloat(arreglo.get(i),"alpha",0f,1f));
+                    oArray.get(i).setDuration(2000);
+                }
+
+                AnimatorSet animator=new AnimatorSet();
+                animator.setDuration(250L);
+                animator.playTogether(translate,oArray.get(0),oArray.get(1),oArray.get(2),oArray.get(3),oArray.get(4));
+                animator.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+                animator.start();
+
+            }
+            public void onFinish() {
+            }
+        }.start();
+
     }
 
     public int getTotalHeight(LinearLayout linearLayout)
